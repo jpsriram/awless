@@ -42,6 +42,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/ecr/ecriface"
 	"github.com/aws/aws-sdk-go/service/ecs"
 	"github.com/aws/aws-sdk-go/service/ecs/ecsiface"
+	"github.com/aws/aws-sdk-go/service/elb"
+	"github.com/aws/aws-sdk-go/service/elb/elbiface"
 	"github.com/aws/aws-sdk-go/service/elbv2"
 	"github.com/aws/aws-sdk-go/service/elbv2/elbv2iface"
 	"github.com/aws/aws-sdk-go/service/iam"
@@ -2787,6 +2789,85 @@ func (cmd *CreateCertificate) dryRun(renv env.Running, params map[string]interfa
 }
 
 func (cmd *CreateCertificate) inject(params map[string]interface{}) error {
+	return structSetter(cmd, params)
+}
+
+func NewCreateClassicLoadbalancer(sess *session.Session, g cloud.GraphAPI, l ...*logger.Logger) *CreateClassicLoadbalancer {
+	cmd := new(CreateClassicLoadbalancer)
+	if len(l) > 0 {
+		cmd.logger = l[0]
+	} else {
+		cmd.logger = logger.DiscardLogger
+	}
+	if sess != nil {
+		cmd.api = elb.New(sess)
+	}
+	cmd.graph = g
+	return cmd
+}
+
+func (cmd *CreateClassicLoadbalancer) SetApi(api elbiface.ELBAPI) {
+	cmd.api = api
+}
+
+func (cmd *CreateClassicLoadbalancer) Run(renv env.Running, params map[string]interface{}) (interface{}, error) {
+	if renv.IsDryRun() {
+		return cmd.dryRun(renv, params)
+	}
+	return cmd.run(renv, params)
+}
+
+func (cmd *CreateClassicLoadbalancer) run(renv env.Running, params map[string]interface{}) (interface{}, error) {
+	if err := cmd.inject(params); err != nil {
+		return nil, fmt.Errorf("cannot set params on command struct: %s", err)
+	}
+
+	if v, ok := implementsBeforeRun(cmd); ok {
+		if brErr := v.BeforeRun(renv); brErr != nil {
+			return nil, fmt.Errorf("before run: %s", brErr)
+		}
+	}
+
+	input := &elb.CreateLoadBalancerInput{}
+	if err := structInjector(cmd, input, renv.Context()); err != nil {
+		return nil, fmt.Errorf("cannot inject in elb.CreateLoadBalancerInput: %s", err)
+	}
+	start := time.Now()
+	output, err := cmd.api.CreateLoadBalancer(input)
+	renv.Log().ExtraVerbosef("elb.CreateLoadBalancer call took %s", time.Since(start))
+	if err != nil {
+		return nil, decorateAWSError(err)
+	}
+
+	var extracted interface{}
+	if v, ok := implementsResultExtractor(cmd); ok {
+		if output != nil {
+			extracted = v.ExtractResult(output)
+		} else {
+			renv.Log().Warning("create classicloadbalancer: AWS command returned nil output")
+		}
+	}
+
+	if extracted != nil {
+		renv.Log().Verbosef("create classicloadbalancer '%s' done", extracted)
+	} else {
+		renv.Log().Verbose("create classicloadbalancer done")
+	}
+
+	if v, ok := implementsAfterRun(cmd); ok {
+		if brErr := v.AfterRun(renv, output); brErr != nil {
+			return nil, fmt.Errorf("after run: %s", brErr)
+		}
+	}
+
+	return extracted, nil
+}
+
+func (cmd *CreateClassicLoadbalancer) dryRun(renv env.Running, params map[string]interface{}) (interface{}, error) {
+	return fakeDryRunId("classicloadbalancer"), nil
+}
+
+func (cmd *CreateClassicLoadbalancer) inject(params map[string]interface{}) error {
 	return structSetter(cmd, params)
 }
 
@@ -6706,6 +6787,85 @@ func (cmd *DeleteCertificate) dryRun(renv env.Running, params map[string]interfa
 }
 
 func (cmd *DeleteCertificate) inject(params map[string]interface{}) error {
+	return structSetter(cmd, params)
+}
+
+func NewDeleteClassicLoadbalancer(sess *session.Session, g cloud.GraphAPI, l ...*logger.Logger) *DeleteClassicLoadbalancer {
+	cmd := new(DeleteClassicLoadbalancer)
+	if len(l) > 0 {
+		cmd.logger = l[0]
+	} else {
+		cmd.logger = logger.DiscardLogger
+	}
+	if sess != nil {
+		cmd.api = elb.New(sess)
+	}
+	cmd.graph = g
+	return cmd
+}
+
+func (cmd *DeleteClassicLoadbalancer) SetApi(api elbiface.ELBAPI) {
+	cmd.api = api
+}
+
+func (cmd *DeleteClassicLoadbalancer) Run(renv env.Running, params map[string]interface{}) (interface{}, error) {
+	if renv.IsDryRun() {
+		return cmd.dryRun(renv, params)
+	}
+	return cmd.run(renv, params)
+}
+
+func (cmd *DeleteClassicLoadbalancer) run(renv env.Running, params map[string]interface{}) (interface{}, error) {
+	if err := cmd.inject(params); err != nil {
+		return nil, fmt.Errorf("cannot set params on command struct: %s", err)
+	}
+
+	if v, ok := implementsBeforeRun(cmd); ok {
+		if brErr := v.BeforeRun(renv); brErr != nil {
+			return nil, fmt.Errorf("before run: %s", brErr)
+		}
+	}
+
+	input := &elb.DeleteLoadBalancerInput{}
+	if err := structInjector(cmd, input, renv.Context()); err != nil {
+		return nil, fmt.Errorf("cannot inject in elb.DeleteLoadBalancerInput: %s", err)
+	}
+	start := time.Now()
+	output, err := cmd.api.DeleteLoadBalancer(input)
+	renv.Log().ExtraVerbosef("elb.DeleteLoadBalancer call took %s", time.Since(start))
+	if err != nil {
+		return nil, decorateAWSError(err)
+	}
+
+	var extracted interface{}
+	if v, ok := implementsResultExtractor(cmd); ok {
+		if output != nil {
+			extracted = v.ExtractResult(output)
+		} else {
+			renv.Log().Warning("delete classicloadbalancer: AWS command returned nil output")
+		}
+	}
+
+	if extracted != nil {
+		renv.Log().Verbosef("delete classicloadbalancer '%s' done", extracted)
+	} else {
+		renv.Log().Verbose("delete classicloadbalancer done")
+	}
+
+	if v, ok := implementsAfterRun(cmd); ok {
+		if brErr := v.AfterRun(renv, output); brErr != nil {
+			return nil, fmt.Errorf("after run: %s", brErr)
+		}
+	}
+
+	return extracted, nil
+}
+
+func (cmd *DeleteClassicLoadbalancer) dryRun(renv env.Running, params map[string]interface{}) (interface{}, error) {
+	return fakeDryRunId("classicloadbalancer"), nil
+}
+
+func (cmd *DeleteClassicLoadbalancer) inject(params map[string]interface{}) error {
 	return structSetter(cmd, params)
 }
 

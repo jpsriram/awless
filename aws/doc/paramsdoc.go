@@ -154,6 +154,11 @@ var manualParamsDoc = map[string]map[string]string{
 		"domains":            "Main and Additional Fully qualified domain names (FQDNs) to be included in the Certificate name and Subject Alternative Name of the ACM Certificate",
 		"validation-domains": "The domain name that you want ACM to use to send you validation emails. This domain name is the suffix of the email addresses that you want ACM to use. This must be the same as the DomainName value or a superdomain of the domain value",
 	},
+	"create.classicloadbalancer": {
+		"name":      "The name of the Classic load balancer",
+		"zones":     "At least 1 availability zone from the same region as the load balancer",
+		"listeners": "The list of listeners. Format for a listener: LOADB_PROTO:LOADB_PORT:INST_PROTO:INST_PORT . Ex: [HTTPS:443:HTTP:8080,TCP:53:TCP:4567]",
+	},
 	"create.database": {
 		"autoupgrade":        "Set to true to indicate that minor version patches are applied automatically",
 		"availabilityzone":   "Specifies the name of the Availability Zone the DB instance is located in",
@@ -373,6 +378,9 @@ var manualParamsDoc = map[string]map[string]string{
 	},
 	"delete.launchconfiguration": {
 		"name": "The name of the launch configuration to be deleted",
+	},
+	"delete.classicloadbalancer": {
+		"name": "The name of the Classic load balancer",
 	},
 	"delete.policy": {
 		"all-versions": "Set to 'true' to delete all existing versions of the policy to be deleted",

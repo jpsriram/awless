@@ -132,6 +132,11 @@ var generatedParamsDoc = map[string]map[string]string{
 		"name": "",
 	},
 	"create.certificate": {},
+	"create.classicloadbalancer": {
+		"scheme":         "The nodes of an Internet-facing load balancer have public IP addresses",
+		"securitygroups": "[Application Load Balancers] The IDs of the security groups to assign to the load balancer",
+		"subnets":        "The IDs of the subnets to attach to the load balancer",
+	},
 	"create.containercluster": {
 		"name": "The name of your cluster",
 	},
@@ -350,6 +355,7 @@ var generatedParamsDoc = map[string]map[string]string{
 	"delete.certificate": {
 		"arn": "String that contains the ARN of the ACM Certificate to be deleted",
 	},
+	"delete.classicloadbalancer": {},
 	"delete.containercluster": {
 		"id": "The short name or full Amazon Resource Name (ARN) of the cluster to delete",
 	},

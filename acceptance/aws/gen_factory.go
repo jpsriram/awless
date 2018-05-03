@@ -27,6 +27,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
 	"github.com/aws/aws-sdk-go/service/ecr/ecriface"
 	"github.com/aws/aws-sdk-go/service/ecs/ecsiface"
+	"github.com/aws/aws-sdk-go/service/elb/elbiface"
 	"github.com/aws/aws-sdk-go/service/elbv2/elbv2iface"
 	"github.com/aws/aws-sdk-go/service/iam/iamiface"
 	"github.com/aws/aws-sdk-go/service/lambda/lambdaiface"
@@ -258,6 +259,12 @@ func (f *AcceptanceFactory) Build(key string) func() interface{} {
 		return func() interface{} {
 			cmd := awsspec.NewCreateCertificate(nil, f.Graph, f.Logger)
 			cmd.SetApi(f.Mock.(acmiface.ACMAPI))
+			return cmd
+		}
+	case "createclassicloadbalancer":
+		return func() interface{} {
+			cmd := awsspec.NewCreateClassicLoadbalancer(nil, f.Graph, f.Logger)
+			cmd.SetApi(f.Mock.(elbiface.ELBAPI))
 			return cmd
 		}
 	case "createcontainercluster":
@@ -540,6 +547,12 @@ func (f *AcceptanceFactory) Build(key string) func() interface{} {
 		return func() interface{} {
 			cmd := awsspec.NewDeleteCertificate(nil, f.Graph, f.Logger)
 			cmd.SetApi(f.Mock.(acmiface.ACMAPI))
+			return cmd
+		}
+	case "deleteclassicloadbalancer":
+		return func() interface{} {
+			cmd := awsspec.NewDeleteClassicLoadbalancer(nil, f.Graph, f.Logger)
+			cmd.SetApi(f.Mock.(elbiface.ELBAPI))
 			return cmd
 		}
 	case "deletecontainercluster":

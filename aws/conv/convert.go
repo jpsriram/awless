@@ -38,6 +38,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ecr"
 	"github.com/aws/aws-sdk-go/service/ecs"
+	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/aws/aws-sdk-go/service/elbv2"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/lambda"
@@ -89,6 +90,8 @@ func InitResource(source interface{}) (*graph.Resource, error) {
 	case *ec2.NetworkInterface:
 		res = graph.InitResource(cloud.NetworkInterface, awssdk.StringValue(ss.NetworkInterfaceId))
 	// Loadbalancer
+	case *elb.LoadBalancerDescription:
+		res = graph.InitResource(cloud.ClassicLoadBalancer, awssdk.StringValue(ss.LoadBalancerName))
 	case *elbv2.LoadBalancer:
 		res = graph.InitResource(cloud.LoadBalancer, awssdk.StringValue(ss.LoadBalancerArn))
 	case *elbv2.TargetGroup:

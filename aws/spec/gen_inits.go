@@ -111,6 +111,8 @@ func (f *AWSFactory) Build(key string) func() interface{} {
 		return func() interface{} { return NewCreateBucket(f.Sess, f.Graph, f.Log) }
 	case "createcertificate":
 		return func() interface{} { return NewCreateCertificate(f.Sess, f.Graph, f.Log) }
+	case "createclassicloadbalancer":
+		return func() interface{} { return NewCreateClassicLoadbalancer(f.Sess, f.Graph, f.Log) }
 	case "createcontainercluster":
 		return func() interface{} { return NewCreateContainercluster(f.Sess, f.Graph, f.Log) }
 	case "createdatabase":
@@ -205,6 +207,8 @@ func (f *AWSFactory) Build(key string) func() interface{} {
 		return func() interface{} { return NewDeleteBucket(f.Sess, f.Graph, f.Log) }
 	case "deletecertificate":
 		return func() interface{} { return NewDeleteCertificate(f.Sess, f.Graph, f.Log) }
+	case "deleteclassicloadbalancer":
+		return func() interface{} { return NewDeleteClassicLoadbalancer(f.Sess, f.Graph, f.Log) }
 	case "deletecontainercluster":
 		return func() interface{} { return NewDeleteContainercluster(f.Sess, f.Graph, f.Log) }
 	case "deletecontainertask":
@@ -406,6 +410,7 @@ var (
 	_ command = &CreateAppscalingtarget{}
 	_ command = &CreateBucket{}
 	_ command = &CreateCertificate{}
+	_ command = &CreateClassicLoadbalancer{}
 	_ command = &CreateContainercluster{}
 	_ command = &CreateDatabase{}
 	_ command = &CreateDbsubnetgroup{}
@@ -453,6 +458,7 @@ var (
 	_ command = &DeleteAppscalingtarget{}
 	_ command = &DeleteBucket{}
 	_ command = &DeleteCertificate{}
+	_ command = &DeleteClassicLoadbalancer{}
 	_ command = &DeleteContainercluster{}
 	_ command = &DeleteContainertask{}
 	_ command = &DeleteDatabase{}
